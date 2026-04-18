@@ -47,6 +47,7 @@ Default-account pointer:
 - `scripts/google_api_multi.py` — account-aware Google API wrapper CLI
 - `references/usage.md` — user-facing command examples
 - `references/migration.md` — legacy migration notes
+- `references/fresh-machine-setup.md` — clean install/deploy/setup guide for a new machine
 
 ## Rules
 

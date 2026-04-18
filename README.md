@@ -26,6 +26,49 @@ Implemented:
 - repo-to-runtime deploy script
 - basic test coverage for account storage and deployment behavior
 
+## Quickstart for Hermes users
+
+If you already have Hermes installed locally, the fastest way to use this skill is:
+
+1. Put the skill in your runtime skills directory:
+   - `~/.hermes/skills/productivity/google-workspace-multi-account/`
+2. Use the Hermes venv Python:
+
+```bash
+PY="$HOME/.hermes/hermes-agent/venv/bin/python"
+SKILL="$HOME/.hermes/skills/productivity/google-workspace-multi-account/scripts"
+```
+
+3. Save a Google OAuth client secret for a named account:
+
+```bash
+"$PY" "$SKILL/setup_multi.py" --account work --client-secret /path/to/client_secret.json
+```
+
+4. Generate the auth URL:
+
+```bash
+"$PY" "$SKILL/setup_multi.py" --account work --auth-url
+```
+
+5. Open the URL, authorize the account, then paste the localhost redirect URL back into:
+
+```bash
+"$PY" "$SKILL/setup_multi.py" --account work --auth-code "http://localhost:1/?code=...&state=..."
+```
+
+6. Verify auth:
+
+```bash
+"$PY" "$SKILL/setup_multi.py" --account work --check
+```
+
+7. Use the account:
+
+```bash
+"$PY" "$SKILL/google_api_multi.py" --account work drive search "project plan"
+```
+
 ## Project layout
 
 ```text
@@ -36,6 +79,7 @@ google-workspace-multi-account/
   .gitignore
   pyproject.toml
   references/
+    fresh-machine-setup.md
     migration.md
     usage.md
   scripts/
@@ -151,6 +195,18 @@ If a default account is configured, you can omit `--account`:
 ```bash
 "$PY" "$SKILL/google_api_multi.py" drive search "notes"
 ```
+
+## Fresh machine setup
+
+If you are starting from a machine with Hermes but without this custom skill installed yet, see:
+- `references/fresh-machine-setup.md`
+
+That guide covers:
+- copying/cloning the repo
+- deploying into `~/.hermes/skills/`
+- using the Hermes venv Python
+- connecting the first account
+- setting a default account
 
 ## Development workflow
 
