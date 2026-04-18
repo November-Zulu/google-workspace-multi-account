@@ -1,0 +1,20 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.env
+.pytest_cache/
+.mypy_cache/
+.DS_Store
+
+# Local runtime/account data should never be committed
+google_accounts/
+*.token.json
+*.client_secret.json
+*.oauth_pending.json
+*.secrets.json
+
+# Build artifacts
+dist/
+build/

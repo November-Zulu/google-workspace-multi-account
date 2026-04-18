@@ -1,0 +1,18 @@
+[project]
+name = "google-workspace-multi-account"
+version = "0.1.0"
+description = "Standalone Hermes skill project for multi-account Google Workspace access"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [
+  { name = "Aaron Viljoen" }
+]
+dependencies = []
+
+[tool.setuptools]
+py-modules = []
+
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
