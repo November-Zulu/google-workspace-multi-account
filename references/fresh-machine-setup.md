@@ -13,28 +13,31 @@ All examples below use placeholder aliases and placeholder paths.
 
 ## 1. Get the source repo
 
-Either clone the repository:
+Clone the repository:
 
 ```bash
 git clone https://github.com/November-Zulu/google-workspace-multi-account.git
 cd google-workspace-multi-account
 ```
 
-Or copy the project directory onto the machine by your preferred method.
+## 2. Install the runtime skill
 
-## 2. Deploy the runtime skill
-
-Use the Hermes venv Python to deploy the repo contents into the runtime skills directory:
+Fast path:
 
 ```bash
-PY="$HOME/.hermes/hermes-agent/venv/bin/python"
-"$PY" scripts/deploy_skill.py
+python3 scripts/install_skill.py
 ```
 
 This installs the runtime skill under:
 
 ```text
 ~/.hermes/skills/productivity/google-workspace-multi-account/
+```
+
+Optional custom Hermes home:
+
+```bash
+python3 scripts/install_skill.py --hermes-home /path/to/custom-hermes-home
 ```
 
 ## 3. Define helper variables

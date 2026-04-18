@@ -45,6 +45,8 @@ Default-account pointer:
 - `scripts/account_store.py` — account path resolution, alias validation, metadata helpers
 - `scripts/setup_multi.py` — OAuth setup and account-management CLI
 - `scripts/google_api_multi.py` — account-aware Google API wrapper CLI
+- `scripts/deploy_skill.py` — sync repo files into a Hermes runtime skill directory
+- `scripts/install_skill.py` — one-command installer for local Hermes setups
 - `references/usage.md` — user-facing command examples
 - `references/migration.md` — legacy migration notes
 - `references/fresh-machine-setup.md` — clean install/deploy/setup guide for a new machine

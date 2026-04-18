@@ -23,47 +23,58 @@ Implemented:
 - named Google account storage under `~/.hermes/google_accounts/`
 - per-account OAuth setup flow with PKCE
 - account-aware Google Workspace API wrapper
-- repo-to-runtime deploy script
+- install and deploy scripts for Hermes runtime installation
 - basic test coverage for account storage and deployment behavior
 
 ## Quickstart for Hermes users
 
 If you already have Hermes installed locally, the fastest way to use this skill is:
 
-1. Put the skill in your runtime skills directory:
-   - `~/.hermes/skills/productivity/google-workspace-multi-account/`
-2. Use the Hermes venv Python:
+1. Clone this repository:
+
+```bash
+git clone https://github.com/November-Zulu/google-workspace-multi-account.git
+cd google-workspace-multi-account
+```
+
+2. Install the skill into your Hermes runtime:
+
+```bash
+python3 scripts/install_skill.py
+```
+
+3. Define helper variables:
 
 ```bash
 PY="$HOME/.hermes/hermes-agent/venv/bin/python"
 SKILL="$HOME/.hermes/skills/productivity/google-workspace-multi-account/scripts"
 ```
 
-3. Save a Google OAuth client secret for a named account:
+4. Save a Google OAuth client secret for a named account:
 
 ```bash
 "$PY" "$SKILL/setup_multi.py" --account work --client-secret /path/to/client_secret.json
 ```
 
-4. Generate the auth URL:
+5. Generate the auth URL:
 
 ```bash
 "$PY" "$SKILL/setup_multi.py" --account work --auth-url
 ```
 
-5. Open the URL, authorize the account, then paste the localhost redirect URL back into:
+6. Open the URL, authorize the account, then paste the localhost redirect URL back into:
 
 ```bash
 "$PY" "$SKILL/setup_multi.py" --account work --auth-code "http://localhost:1/?code=...&state=..."
 ```
 
-6. Verify auth:
+7. Verify auth:
 
 ```bash
 "$PY" "$SKILL/setup_multi.py" --account work --check
 ```
 
-7. Use the account:
+8. Use the account:
 
 ```bash
 "$PY" "$SKILL/google_api_multi.py" --account work drive search "project plan"
@@ -86,6 +97,7 @@ google-workspace-multi-account/
     account_store.py
     deploy_skill.py
     google_api_multi.py
+    install_skill.py
     setup_multi.py
   tests/
     test_account_store.py
@@ -202,25 +214,11 @@ If you are starting from a machine with Hermes but without this custom skill ins
 - `references/fresh-machine-setup.md`
 
 That guide covers:
-- copying/cloning the repo
-- deploying into `~/.hermes/skills/`
+- cloning the repo
+- installing into `~/.hermes/skills/`
 - using the Hermes venv Python
 - connecting the first account
 - setting a default account
-
-## Development workflow
-
-1. Develop in this repository.
-2. Run tests locally.
-3. Deploy/sync the finished skill into the runtime location.
-4. Use the deployed runtime copy from Hermes.
-
-Deploy to runtime:
-
-```bash
-PY="$HOME/.hermes/hermes-agent/venv/bin/python"
-"$PY" scripts/deploy_skill.py
-```
 
 ## Testing
 
@@ -230,16 +228,6 @@ Run the test suite with the Hermes venv Python:
 PY="$HOME/.hermes/hermes-agent/venv/bin/python"
 "$PY" -m unittest discover -s tests -v
 ```
-
-## Security notes
-
-Do not commit:
-- OAuth client secrets
-- tokens
-- account metadata from real users
-- real Gmail/Drive output
-
-Use placeholder aliases and placeholder email addresses in public documentation.
 
 ## License
 
