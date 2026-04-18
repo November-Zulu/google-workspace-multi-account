@@ -1,10 +1,12 @@
 # Usage
 
-This skill is intended to let one Hermes session use multiple Google accounts by explicit alias.
+This skill lets one Hermes session use multiple Google accounts by explicit alias.
+
+Use generic aliases like `work` and `personal` in documentation and examples. Do not publish real account aliases, real email addresses, or real token paths.
 
 ## Data layout
 
-All account data should live under:
+All account data lives under:
 
 ```text
 ~/.hermes/google_accounts/
@@ -51,7 +53,7 @@ python scripts/setup_multi.py --account work --check
 
 ```bash
 python scripts/setup_multi.py --list-accounts
-python scripts/setup_multi.py --show-account work
+python scripts/setup_multi.py --show-account --account work
 python scripts/setup_multi.py --default-account work
 python scripts/setup_multi.py --revoke --account work
 ```
@@ -71,6 +73,18 @@ python scripts/google_api_multi.py --account personal sheets get SHEET_ID "Sheet
 - If omitted and exactly one account exists, use it.
 - If omitted and a default account exists, use it.
 - If omitted and multiple accounts exist with no default, fail clearly.
+
+## API enablement
+
+Enable the standard Google product APIs used by this project, especially:
+- Gmail API
+- Google Calendar API
+- Google Drive API
+- Google Sheets API
+- Google Docs API
+- People API
+
+`drivemcp.googleapis.com` is not required for this implementation.
 
 ## Safety guidance
 

@@ -2,7 +2,7 @@
 
 A standalone Hermes skill project for multi-account Google Workspace access.
 
-This project is the development/source repository for a custom Hermes skill that allows one Hermes profile/session to work with multiple named Google accounts for:
+This project provides a custom Hermes skill that lets one Hermes profile/session work with multiple named Google accounts for:
 - Gmail
 - Google Drive
 - Google Calendar
@@ -10,26 +10,21 @@ This project is the development/source repository for a custom Hermes skill that
 - Google Docs
 - Google Contacts
 
-The runtime-installed skill is intended to live at:
-- `~/.hermes/skills/productivity/google-workspace-multi-account/`
+This repository is the development/source copy used to build, test, version, and publish the skill before deploying it into a running Hermes instance.
 
-This repository is the clean development copy used to build, test, version, and publish the skill before deploying it into the running Hermes instance.
+Runtime install location:
+- `~/.hermes/skills/productivity/google-workspace-multi-account/`
 
 ## Status
 
-Current state: scaffold / architecture bootstrap.
+Current state: working v0.1.0 implementation.
 
-What exists now:
-- skill definition (`SKILL.md`)
-- account storage helpers
-- setup CLI scaffold
-- API CLI scaffold
-- migration and usage notes
-
-What is still pending:
-- full OAuth PKCE flow in `scripts/setup_multi.py`
-- account-aware Google API handlers in `scripts/google_api_multi.py`
-- testing and deployment workflow
+Implemented:
+- named Google account storage under `~/.hermes/google_accounts/`
+- per-account OAuth setup flow with PKCE
+- account-aware Google Workspace API wrapper
+- repo-to-runtime deploy script
+- basic test coverage for account storage and deployment behavior
 
 ## Project layout
 
@@ -45,13 +40,17 @@ google-workspace-multi-account/
     usage.md
   scripts/
     account_store.py
-    setup_multi.py
+    deploy_skill.py
     google_api_multi.py
+    setup_multi.py
+  tests/
+    test_account_store.py
+    test_deploy_skill.py
 ```
 
 ## Runtime data layout
 
-The skill should store account data outside the skill directory, under the active `HERMES_HOME`:
+The skill stores account data outside the skill directory, under the active `HERMES_HOME`:
 
 ```text
 ~/.hermes/google_accounts/
@@ -68,20 +67,123 @@ The skill should store account data outside the skill directory, under the activ
     metadata.json
 ```
 
+## Required Google APIs
+
+Enable the APIs you plan to use in the Google Cloud project that owns your OAuth client.
+
+Recommended:
+- Gmail API
+- Google Calendar API
+- Google Drive API
+- Google Sheets API
+- Google Docs API
+- People API
+
+Note:
+- `drive.googleapis.com` is required for normal Drive access in this project.
+- `drivemcp.googleapis.com` is a separate Google MCP service and is not required for this implementation.
+
+## Setup examples
+
+These examples use generic placeholder aliases and paths. They do not correspond to any real user accounts.
+
+### Connect an account
+
+```bash
+PY="$HOME/.hermes/hermes-agent/venv/bin/python"
+SKILL="$HOME/.hermes/skills/productivity/google-workspace-multi-account/scripts"
+
+"$PY" "$SKILL/setup_multi.py" --account work --client-secret /path/to/client_secret.json
+"$PY" "$SKILL/setup_multi.py" --account work --auth-url
+```
+
+Open the returned URL, authorize the Google account, then paste the full localhost redirect URL back into:
+
+```bash
+"$PY" "$SKILL/setup_multi.py" --account work --auth-code "http://localhost:1/?code=...&state=..."
+```
+
+Verify:
+
+```bash
+"$PY" "$SKILL/setup_multi.py" --account work --check
+```
+
+### Connect a second account
+
+```bash
+"$PY" "$SKILL/setup_multi.py" --account personal --client-secret /path/to/client_secret.json
+"$PY" "$SKILL/setup_multi.py" --account personal --auth-url
+"$PY" "$SKILL/setup_multi.py" --account personal --auth-code "http://localhost:1/?code=...&state=..."
+```
+
+### Set a default account
+
+```bash
+"$PY" "$SKILL/setup_multi.py" --default-account personal
+```
+
+## Usage examples
+
+### Search Drive in a specific account
+
+```bash
+"$PY" "$SKILL/google_api_multi.py" --account work drive search "quarterly report"
+"$PY" "$SKILL/google_api_multi.py" --account personal drive search "tax documents"
+```
+
+### Search Gmail in a specific account
+
+```bash
+"$PY" "$SKILL/google_api_multi.py" --account work gmail search "is:unread"
+```
+
+### List upcoming calendar events
+
+```bash
+"$PY" "$SKILL/google_api_multi.py" --account personal calendar list
+```
+
+### Use the default account
+
+If a default account is configured, you can omit `--account`:
+
+```bash
+"$PY" "$SKILL/google_api_multi.py" drive search "notes"
+```
+
 ## Development workflow
 
-1. Develop here in this repository.
-2. Test the scripts locally.
-3. When ready, deploy/sync the finished skill into:
-   - `~/.hermes/skills/productivity/google-workspace-multi-account/`
-4. Then use the deployed runtime copy from Hermes.
+1. Develop in this repository.
+2. Run tests locally.
+3. Deploy/sync the finished skill into the runtime location.
+4. Use the deployed runtime copy from Hermes.
 
-## Suggested next phase
+Deploy to runtime:
 
-- Port OAuth flow from the bundled `google-workspace` skill into `scripts/setup_multi.py`
-- Port Google API service handlers into `scripts/google_api_multi.py`
-- Add account selection, metadata identity capture, and safety confirmations
-- Add tests and deployment documentation
+```bash
+PY="$HOME/.hermes/hermes-agent/venv/bin/python"
+"$PY" scripts/deploy_skill.py
+```
+
+## Testing
+
+Run the test suite with the Hermes venv Python:
+
+```bash
+PY="$HOME/.hermes/hermes-agent/venv/bin/python"
+"$PY" -m unittest discover -s tests -v
+```
+
+## Security notes
+
+Do not commit:
+- OAuth client secrets
+- tokens
+- account metadata from real users
+- real Gmail/Drive output
+
+Use placeholder aliases and placeholder email addresses in public documentation.
 
 ## License
 
